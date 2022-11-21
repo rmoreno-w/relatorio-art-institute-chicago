@@ -3,7 +3,11 @@ module.exports = {
     mode: 'jit',
     content: ['./pages/**/*.{js,ts,jsx,tsx}', './src/components/**/*.{js,ts,jsx,tsx}', './app/**/*.{js,ts,jsx,tsx}'],
     theme: {
-        extend: {},
+        extend: {
+            fontFamily: {
+                liu: ['"Liu Jian Mao Cao"', 'cursive'],
+            },
+        },
     },
     plugins: [],
 };

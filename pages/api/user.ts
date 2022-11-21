@@ -1,22 +1,31 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { artists } from '@prisma/client';
+import { artists, artworks, artwork_types, departments, Prisma } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../services/prisma';
 
 type Data = {
-    artistas: artists[];
+    obras:
+        | (artworks & {
+              artists: artists | null;
+              artwork_types: artwork_types | null;
+              departments: departments | null;
+              _count: Prisma.ArtworksCountOutputType;
+          })[]
+        | undefined;
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     const numeroPaginaString = req.query.pagina! as string;
     const numeroPagina = parseInt(numeroPaginaString) - 1;
 
-    const artistas = await prisma.artists.findMany({
+    const obras = await prisma.artworks.findMany({
         skip: numeroPagina * 15,
         take: 15,
         include: {
-            // _count: true,
-            artworks: true,
+            _count: true,
+            artists: true,
+            departments: true,
+            artwork_types: true,
         },
         // where: {
         //     title: 'Adolph Gottlieb',
@@ -34,10 +43,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     //     return artista;
     // });
 
-    // console.log(artistasPaginados);
+    // console.log(obras);
+    // console.log(`\n\n\n`);
 
     res.status(200).json({
-        artistas: artistas,
+        obras: obras,
     });
     // return {
     //     props: {

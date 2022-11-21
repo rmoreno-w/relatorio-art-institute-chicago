@@ -1,14 +1,31 @@
-import { artists } from '@prisma/client';
+import { artists, artworks, artwork_types, departments, Prisma } from '@prisma/client';
 import Head from 'next/head';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { apiClient } from '../services/axios';
+import HamburguerIcon from '../src/components/HamburguerIcon';
 import Loader from '../src/components/Loader';
 import Pagination from '../src/components/Pagination';
+import Sidebar from '../src/components/Sidebar';
 import Tabela from '../src/components/Tabela';
 
+interface composedArtwork {
+    obras:
+        | (artworks & {
+              artists: artists | null;
+              artwork_types: artwork_types | null;
+              departments: departments | null;
+              _count: Prisma.ArtworksCountOutputType;
+          })[]
+        | undefined;
+}
 function Home() {
     const [paginaAtual, setPaginaAtual] = useState(1);
+    const [isMenuOpen, setMenuOpen] = useState(true);
+
+    function toggleMenu() {
+        setMenuOpen(!isMenuOpen);
+    }
 
     function handleBotaoAnterior() {
         if (paginaAtual > 1) {
@@ -23,7 +40,7 @@ function Home() {
         refetch();
     }
 
-    const { data, isFetching, refetch } = useQuery<artists[]>('dadosDoBD', async () => {
+    const { data, isFetching, refetch } = useQuery('dadosDoBD', async () => {
         const response = await apiClient.get('user', {
             params: {
                 pagina: paginaAtual,
@@ -32,7 +49,7 @@ function Home() {
 
         const dadosDoBD = response.data;
 
-        return dadosDoBD.artistas;
+        return dadosDoBD.obras;
     });
 
     return (
@@ -40,17 +57,20 @@ function Home() {
             <Head>
                 <title>Relatório Art Institute Chicago</title>
             </Head>
-            <main className='h-screen bg-gray-800 text-gray-100 flex flex-col'>
+            <main className='min-h-screen bg-gray-800 text-gray-100 flex flex-col'>
+                <HamburguerIcon isMenuOpen={isMenuOpen} menuClick={toggleMenu} />
                 <header className='flex items-center justify-center h-20 bg-gray-900 text-gray-100'>
-                    Cabecalho maroto
+                    <span className='font-liu text-4xl'>Art Institute Chicago</span>
                 </header>
+
+                <Sidebar isMenuOpen={isMenuOpen} />
 
                 <article className='flex flex-col items-center justify-center h-full bg-gray-800 text-gray-100 p-8'>
                     {isFetching ? (
                         <Loader />
                     ) : (
                         <>
-                            <Tabela artistas={data} />
+                            <Tabela obras={data} />
                             <Pagination
                                 paginaAtual={paginaAtual}
                                 itemAnterior={handleBotaoAnterior}
