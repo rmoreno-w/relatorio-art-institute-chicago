@@ -37,9 +37,9 @@ export default function Tabela({ obras }: TabelaProps) {
     const [showLink] = useAtom(showLinkAtom);
 
     return (
-        <table className='font-bold text-sm border-collapse'>
+        <table className='font-bold text-sm border-collapse w-full table-fixed'>
             <thead>
-                <tr className='border-y-2 border-gray-400'>
+                <tr className='border-y-2 border-gray-800'>
                     {showId && <th className='text-center px-4 py-2'>Id</th>}
                     {showNomeArtista && <th className='text-center px-4 py-2'>Nome do Artista</th>}
                     {showNomeObra && <th className='text-center px-4 py-2'>Nome da Obra</th>}
@@ -52,32 +52,60 @@ export default function Tabela({ obras }: TabelaProps) {
                     {showLink && <th className='text-center px-4 py-2'>Link extra</th>}
                 </tr>
             </thead>
-            <tbody>
+            <tbody className='overflow-y-scroll'>
                 {obras?.map((obra) => {
                     return (
-                        <tr key={obra.id} className='text-center border-b border-gray-700'>
-                            {showId && <td className='text-center px-4 py-2 text-ellipsis'>{obra.id}</td>}
-                            {showNomeArtista && (
-                                <td className='text-center px-4 py-2 text-ellipsis'>{obra.artists?.title}</td>
+                        <tr key={obra.id} className='text-center border-b border-gray-400 '>
+                            {showId && (
+                                <td className='text-center font-[355] px-4 py-2 truncate hover:text-clip'>{obra.id}</td>
                             )}
-                            {showNomeObra && <td className='text-center px-4 py-2 text-ellipsis'>{obra.title}</td>}
+                            {showNomeArtista && (
+                                <td className='text-center font-[355] px-4 py-2 truncate hover:text-clip'>
+                                    {obra.artists?.title}
+                                </td>
+                            )}
+                            {showNomeObra && (
+                                <td className='text-center font-[355] px-4 py-2 truncate hover:text-clip'>
+                                    {obra.title}
+                                </td>
+                            )}
                             {showTipoObra && (
-                                <td className='text-center px-4 py-2 text-ellipsis'>{obra.artwork_types?.title}</td>
+                                <td className='text-center font-[355] px-4 py-2 truncate hover:text-clip'>
+                                    {obra.artwork_types?.title}
+                                </td>
                             )}
                             {showDepartamento && (
-                                <td className='text-center px-4 py-2 text-ellipsis'>{obra.departments?.title}</td>
+                                <td className='text-center font-[355] px-4 py-2 truncate hover:text-clip'>
+                                    {obra.departments?.title}
+                                </td>
                             )}
                             {showAnoInicio && (
-                                <td className='text-center px-4 py-2 text-ellipsis'>{obra.date_start}</td>
+                                <td className='text-center font-[355] px-4 py-2 truncate hover:text-clip'>
+                                    {obra.date_start}
+                                </td>
                             )}
-                            {showAnoFim && <td className='text-center px-4 py-2 text-ellipsis'>{obra.date_end}</td>}
+                            {showAnoFim && (
+                                <td className='text-center font-[355] px-4 py-2 truncate hover:text-clip'>
+                                    {obra.date_end}
+                                </td>
+                            )}
                             {showLugarOrigem && (
-                                <td className='text-center px-4 py-2 text-ellipsis'>{obra.place_of_origin}</td>
+                                <td className='text-center font-[355] px-4 py-2 truncate hover:text-clip'>
+                                    {obra.place_of_origin}
+                                </td>
                             )}
                             {showDimensoes && (
-                                <td className='text-center px-4 py-2 text-ellipsis'>{obra.dimensions}</td>
+                                <td className='text-center font-[355] px-4 py-2 truncate hover:text-clip'>
+                                    {obra.dimensions}
+                                </td>
                             )}
-                            {showLink && <td className='text-center px-4 py-2 text-ellipsis'>{obra.api_link}</td>}
+                            {showLink && (
+                                <td className='text-center font-[355] px-4 py-2 truncate hover:text-clip'>
+                                    <a href={obra.api_link as string} className='hover:underline'>
+                                        Link externo
+                                    </a>
+                                </td>
+                            )}
                         </tr>
                     );
                 })}

@@ -4,20 +4,20 @@ interface hamburguerIconProps {
 }
 export default function HamburguerIcon({ menuClick, isMenuOpen }: hamburguerIconProps) {
     return (
-        <button onClick={menuClick} className='absolute top-4 left-4 h-12 w-12 z-[12] p-2'>
+        <button onClick={menuClick} className='fixed top-4 left-4 h-12 w-12 z-[12] p-2'>
             <span className='flex flex-col'>
                 <span
-                    className={`h-1 w-full transition duration-[550ms] rounded-[3px] bg-gray-100 inline-block ${
+                    className={`h-1 w-full transition duration-[550ms] rounded-[3px] bg-gray-700 inline-block ${
                         isMenuOpen ? 'translate-y-3 rotate-[135deg]' : ''
                     }`}
                 />
                 <span
-                    className={`h-1 w-full transition duration-[550ms] rounded-[3px] bg-gray-100 inline-block mt-1.5 ${
+                    className={`h-1 w-full transition duration-[550ms] rounded-[3px] bg-gray-700 inline-block mt-1.5 ${
                         isMenuOpen ? 'scale-0 translate-x-4' : ''
                     }`}
                 />
                 <span
-                    className={`h-1 w-full transition duration-[550ms] rounded-[3px] bg-gray-100 inline-block mt-1.5 ${
+                    className={`h-1 w-full transition duration-[550ms] rounded-[3px] bg-gray-700 inline-block mt-1.5 ${
                         isMenuOpen ? '-translate-y-2 rotate-[-135deg]' : ''
                     }`}
                 />

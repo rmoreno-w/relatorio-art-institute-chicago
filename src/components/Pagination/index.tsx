@@ -6,14 +6,14 @@ interface PaginationProps {
 
 export default function Pagination({ paginaAtual, itemAnterior, proximoItem }: PaginationProps) {
     return (
-        <div className='flex justify-between w-60 text-white font-bold rounded mt-6 items-center'>
+        <div className='flex justify-between w-60 text-gray-900 font-bold rounded mt-6 items-center'>
             {paginaAtual == 1 ? (
-                <button className='text-white pointer-events-none font-bold py-2 px-4 rounded flex items-center gap-4 border-2 border-white-500'>
+                <button className='text-gray-800 pointer-events-none font-bold py-2 px-4 rounded flex items-center gap-4 border-2 border-gray-800'>
                     Anterior
                 </button>
             ) : (
                 <button
-                    className='hover:bg-gray-700 text-white font-bold py-2 px-4 rounded flex items-center gap-4 border-2 border-white-500'
+                    className='hover:bg-gray-400/50 text-gray-800 font-bold py-2 px-4 rounded flex items-center gap-4 border-2 border-gray-800'
                     onClick={itemAnterior}
                 >
                     Anterior
@@ -23,7 +23,7 @@ export default function Pagination({ paginaAtual, itemAnterior, proximoItem }: P
             <p>{paginaAtual}</p>
 
             <button
-                className='hover:bg-gray-700 text-white font-bold py-2 px-4 rounded flex items-center gap-4 border-2 border-white-500'
+                className='hover:bg-gray-400/50 text-gray-800 font-bold py-2 px-4 rounded flex items-center gap-4 border-2 border-gray-800'
                 onClick={proximoItem}
             >
                 Próximo

@@ -6,6 +6,13 @@ module.exports = {
         extend: {
             fontFamily: {
                 liu: ['"Liu Jian Mao Cao"', 'cursive'],
+                montserrat: ['"Montserrat"', 'sans-serif'],
+            },
+            colors: {
+                projectWhite: '#f8f8f8',
+                projectWhite2: '#ededee',
+                projectPurple: '#7D5BA6',
+                projectRed: '#ff3d4a',
             },
         },
     },

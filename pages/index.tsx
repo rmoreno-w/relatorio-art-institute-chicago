@@ -21,7 +21,7 @@ interface composedArtwork {
 }
 function Home() {
     const [paginaAtual, setPaginaAtual] = useState(1);
-    const [isMenuOpen, setMenuOpen] = useState(true);
+    const [isMenuOpen, setMenuOpen] = useState(false);
 
     function toggleMenu() {
         setMenuOpen(!isMenuOpen);
@@ -57,15 +57,15 @@ function Home() {
             <Head>
                 <title>Relatório Art Institute Chicago</title>
             </Head>
-            <main className='min-h-screen bg-gray-800 text-gray-100 flex flex-col'>
+            <main className='min-h-screen bg- text-gray-800 flex flex-col font-montserrat'>
                 <HamburguerIcon isMenuOpen={isMenuOpen} menuClick={toggleMenu} />
-                <header className='flex items-center justify-center h-20 bg-gray-900 text-gray-100'>
-                    <span className='font-liu text-4xl'>Art Institute Chicago</span>
+                <header className='flex items-center justify-center h-20 bg-projectWhite text-gray-900 sticky top-0 shadow-md rounded-b-[20px]'>
+                    <span className='font-liu text-4xl'>Art Institute of Chicago</span>
                 </header>
 
                 <Sidebar isMenuOpen={isMenuOpen} />
 
-                <article className='flex flex-col items-center justify-center h-full bg-gray-800 text-gray-100 p-8'>
+                <article className='flex flex-col items-center justify-center h-full bg-projectWhite/80 backdrop-blur-3xl text-gray-800 p-8 m-4 mt-8 rounded-[20px] shadow-md'>
                     {isFetching ? (
                         <Loader />
                     ) : (
