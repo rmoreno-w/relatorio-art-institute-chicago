@@ -16,6 +16,30 @@ type Data = {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     const numeroPaginaString = req.query.pagina! as string;
+
+    const id = parseInt(req.query.id! as string);
+    const nomeDaObra = req.query.nomeDaObra;
+    const nomeDoArtista = req.query.nomeDoArtista;
+    const tipoDaObra = req.query.tipoDaObra;
+    const nomeDepartamento = req.query.nomeDepartamento;
+    const anoInicio = parseInt(req.query.anoInicio! as string);
+    const anoFim = parseInt(req.query.anoFim! as string);
+    const lugarDeOrigem = req.query.lugarDeOrigem;
+
+    let filtroBusca = {};
+    id && id != NaN ? (filtroBusca = { ...filtroBusca, id }) : null;
+    nomeDoArtista ? (filtroBusca = { ...filtroBusca, artists: { title: nomeDoArtista } }) : null;
+    nomeDaObra ? (filtroBusca = { ...filtroBusca, title: nomeDaObra }) : null;
+    tipoDaObra ? (filtroBusca = { ...filtroBusca, artwork_types: { title: tipoDaObra } }) : null;
+    nomeDepartamento ? (filtroBusca = { ...filtroBusca, departments: { title: nomeDepartamento } }) : null;
+    anoInicio && anoInicio != NaN ? (filtroBusca = { ...filtroBusca, date_start: anoInicio }) : null;
+    anoFim && anoFim != NaN ? (filtroBusca = { ...filtroBusca, date_end: anoFim }) : null;
+    lugarDeOrigem ? (filtroBusca = { ...filtroBusca, place_of_origin: lugarDeOrigem }) : null;
+
+    const areFiltersEmpty = Object.keys(filtroBusca).length === 0 ? true : false;
+    console.log(filtroBusca);
+    // console.log('\n\n\n');
+
     const numeroPagina = parseInt(numeroPaginaString) - 1;
 
     const obras = await prisma.artworks.findMany({
@@ -27,11 +51,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             departments: true,
             artwork_types: true,
         },
-        // where: {
-        //     title: 'Adolph Gottlieb',
-        // },
+        where: {
+            ...filtroBusca,
+        },
     });
 
+    // console.log(obras);
     // const artistas = await prisma.$queryRaw`SELECT * FROM show_artists` ;
     // console.log(artistas);
     // console.log(artistas[0].artworks);

@@ -1,8 +1,19 @@
 import { artists, artworks, artwork_types, departments, Prisma } from '@prisma/client';
+import { useAtom } from 'jotai';
 import Head from 'next/head';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { apiClient } from '../services/axios';
+import {
+    anoFimAtom,
+    anoInicioAtom,
+    idAtom,
+    lugarDeOrigemAtom,
+    nomeDaObraAtom,
+    nomeDepartamentoAtom,
+    nomeDoArtistaAtom,
+    tipoDaObraAtom,
+} from '../src/components/GrupoFiltrosAtributos';
 import HamburguerIcon from '../src/components/HamburguerIcon';
 import Loader from '../src/components/Loader';
 import Pagination from '../src/components/Pagination';
@@ -21,6 +32,16 @@ interface composedArtwork {
 }
 function Home() {
     const [paginaAtual, setPaginaAtual] = useState(1);
+
+    const [id] = useAtom(idAtom);
+    const [nomeDaObra] = useAtom(nomeDaObraAtom);
+    const [nomeDoArtista] = useAtom(nomeDoArtistaAtom);
+    const [tipoDaObra] = useAtom(tipoDaObraAtom);
+    const [nomeDepartamento] = useAtom(nomeDepartamentoAtom);
+    const [anoInicio] = useAtom(anoInicioAtom);
+    const [anoFim] = useAtom(anoFimAtom);
+    const [lugarDeOrigem] = useAtom(lugarDeOrigemAtom);
+
     const [isMenuOpen, setMenuOpen] = useState(false);
 
     function toggleMenu() {
@@ -44,6 +65,14 @@ function Home() {
         const response = await apiClient.get('user', {
             params: {
                 pagina: paginaAtual,
+                id: id,
+                nomeDaObra: nomeDaObra,
+                nomeDoArtista: nomeDoArtista,
+                tipoDaObra: tipoDaObra,
+                nomeDepartamento: nomeDepartamento,
+                anoInicio: anoInicio,
+                anoFim: anoFim,
+                lugarDeOrigem: lugarDeOrigem,
             },
         });
 
@@ -63,7 +92,7 @@ function Home() {
                     <span className='font-liu text-4xl'>Art Institute of Chicago</span>
                 </header>
 
-                <Sidebar isMenuOpen={isMenuOpen} />
+                <Sidebar refetchFunction={refetch} isMenuOpen={isMenuOpen} />
 
                 <article className='flex flex-col items-center justify-center h-full bg-projectWhite/80 backdrop-blur-3xl text-gray-800 p-8 m-4 mt-8 rounded-[20px] shadow-md'>
                     {isFetching ? (

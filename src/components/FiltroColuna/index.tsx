@@ -1,4 +1,4 @@
-import { SetStateAction } from 'react';
+import { SetStateAction } from 'jotai';
 
 interface filtroColunaProps {
     idLabel: string;
