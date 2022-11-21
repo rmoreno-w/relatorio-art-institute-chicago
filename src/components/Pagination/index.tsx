@@ -8,7 +8,7 @@ export default function Pagination({ paginaAtual, itemAnterior, proximoItem }: P
     return (
         <div className='flex justify-between w-60 text-gray-900 font-bold rounded mt-6 items-center'>
             {paginaAtual == 1 ? (
-                <button className='text-gray-800 pointer-events-none font-bold py-2 px-4 rounded flex items-center gap-4 border-2 border-gray-800'>
+                <button className='text-gray-400 pointer-events-none font-bold py-2 px-4 rounded flex items-center gap-4 border-2 border-gray-400'>
                     Anterior
                 </button>
             ) : (

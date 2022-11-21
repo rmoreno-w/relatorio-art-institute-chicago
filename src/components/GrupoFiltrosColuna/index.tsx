@@ -127,7 +127,7 @@ export default function GrupoFiltrosColuna() {
                             className='float-right px-2 py mt-2 rounded-md border-2 border-gray-600'
                             onClick={resetarFiltros}
                         >
-                            Resetar Filtros de Colunas
+                            Resetar Seleção de Colunas
                         </button>
                     </div>
                 </>
