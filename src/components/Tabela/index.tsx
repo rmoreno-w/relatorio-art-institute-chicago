@@ -37,19 +37,21 @@ export default function Tabela({ obras }: TabelaProps) {
     const [showLink] = useAtom(showLinkAtom);
 
     return (
-        <table className='font-bold text-sm border-collapse w-full table-fixed'>
+        <table className='text-sm border-collapse w-full table-fixed'>
             <thead>
-                <tr className='border-y-2 border-gray-800'>
-                    {showId && <th className='text-center px-4 py-2'>Id</th>}
-                    {showNomeArtista && <th className='text-center px-4 py-2'>Nome do Artista</th>}
-                    {showNomeObra && <th className='text-center px-4 py-2'>Nome da Obra</th>}
-                    {showTipoObra && <th className='text-center px-4 py-2'>Tipo da Obra</th>}
-                    {showDepartamento && <th className='text-center px-4 py-2'>Nome do Departamento</th>}
-                    {showAnoInicio && <th className='text-center px-4 py-2'>Ano de Início da Obra</th>}
-                    {showAnoFim && <th className='text-center px-4 py-2'>Ano de Fim da Obra</th>}
-                    {showLugarOrigem && <th className='text-center px-4 py-2'>Lugar de Origem da Obra</th>}
-                    {showDimensoes && <th className='text-center px-4 py-2'>Dimensões</th>}
-                    {showLink && <th className='text-center px-4 py-2'>Link extra</th>}
+                <tr className='border-y-2 border-projectPurple'>
+                    {showId && <th className='font-semibold text-center px-4 py-2'>Id</th>}
+                    {showNomeArtista && <th className='font-semibold text-center px-4 py-2'>Nome do Artista</th>}
+                    {showNomeObra && <th className='font-semibold text-center px-4 py-2'>Nome da Obra</th>}
+                    {showTipoObra && <th className='font-semibold text-center px-4 py-2'>Tipo da Obra</th>}
+                    {showDepartamento && <th className='font-semibold text-center px-4 py-2'>Nome do Departamento</th>}
+                    {showAnoInicio && <th className='font-semibold text-center px-4 py-2'>Ano de Início da Obra</th>}
+                    {showAnoFim && <th className='font-semibold text-center px-4 py-2'>Ano de Fim da Obra</th>}
+                    {showLugarOrigem && (
+                        <th className='font-semibold text-center px-4 py-2'>Lugar de Origem da Obra</th>
+                    )}
+                    {showDimensoes && <th className='font-semibold text-center px-4 py-2'>Dimensões</th>}
+                    {showLink && <th className='font-semibold text-center px-4 py-2'>Link extra</th>}
                 </tr>
             </thead>
             <tbody className='overflow-y-scroll'>

@@ -1,9 +1,9 @@
-import { artists, artworks, artwork_types, departments, Prisma } from '@prisma/client';
 import { atom, useAtom } from 'jotai';
 import Head from 'next/head';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { apiClient } from '../services/axios';
+import Dashboard from '../src/components/Dashboard';
 import {
     anoFimAtom,
     anoInicioAtom,
@@ -21,22 +21,13 @@ import Pagination from '../src/components/Pagination';
 import Sidebar from '../src/components/Sidebar';
 import Tabela from '../src/components/Tabela';
 
-interface composedArtwork {
-    obras:
-        | (artworks & {
-              artists: artists | null;
-              artwork_types: artwork_types | null;
-              departments: departments | null;
-              _count: Prisma.ArtworksCountOutputType;
-          })[]
-        | undefined;
-}
-
 export const pageAtom = atom(1);
+export const displayAtom = atom('dashboard');
 export const numberOfResultsAtom = atom(0);
 
 function Home() {
     const [paginaAtual, setPaginaAtual] = useAtom(pageAtom);
+    const [displayAtual, setDisplayAtual] = useAtom(displayAtom);
 
     const [numberOfResults, setNumberOfResults] = useAtom(numberOfResultsAtom);
 
@@ -103,8 +94,29 @@ function Home() {
             </Head>
             <main className='min-h-screen bg- text-gray-800 flex flex-col font-montserrat'>
                 <HamburguerIcon isMenuOpen={isMenuOpen} menuClick={toggleMenu} />
-                <header className='flex items-center justify-center h-20 bg-projectWhite text-gray-900 sticky top-0 shadow-md rounded-b-[20px]'>
-                    <span className='font-liu text-4xl'>Art Institute of Chicago</span>
+                <header className='grid grid-cols-3 h-20 bg-projectWhite text-gray-900 sticky top-0 shadow-md rounded-b-[20px]'>
+                    <div className='order-1'></div>
+                    <span className='flex items-center justify-center order-2 font-liu text-4xl'>
+                        Art Institute of Chicago
+                    </span>
+                    <div className='order-3 flex justify-end items-center mr-4'>
+                        <button
+                            className={`text-gray-800 font-bold py-2 px-4 flex items-center gap-4 border-b-2 border-transparent hover:border-b-projectPurple ${
+                                displayAtual == 'tabela' ? 'border-b-projectPurple' : null
+                            }`}
+                            onClick={() => setDisplayAtual('tabela')}
+                        >
+                            Tabela
+                        </button>
+                        <button
+                            className={`text-gray-800 font-bold py-2 px-4 flex items-center gap-4 border-b-2 border-transparent hover:border-b-projectPurple ${
+                                displayAtual == 'dashboard' ? 'border-b-projectPurple' : null
+                            }`}
+                            onClick={() => setDisplayAtual('dashboard')}
+                        >
+                            Dashboard
+                        </button>
+                    </div>
                 </header>
 
                 <Sidebar refetchFunction={refetch} isMenuOpen={isMenuOpen} />
@@ -112,7 +124,7 @@ function Home() {
                 <article className='flex flex-col items-center justify-center h-full bg-projectWhite/80 backdrop-blur-3xl text-gray-800 p-8 m-4 mt-8 rounded-[20px] shadow-md'>
                     {isFetching ? (
                         <Loader />
-                    ) : (
+                    ) : displayAtual == 'tabela' ? (
                         <>
                             <Tabela obras={data} />
                             <Pagination
@@ -121,6 +133,8 @@ function Home() {
                                 proximoItem={handleBotaoProximo}
                             />
                         </>
+                    ) : (
+                        <Dashboard />
                     )}
                 </article>
             </main>

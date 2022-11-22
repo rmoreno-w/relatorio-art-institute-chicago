@@ -17,7 +17,7 @@ export default function Pagination({ paginaAtual, itemAnterior, proximoItem }: P
                 </button>
             ) : (
                 <button
-                    className='hover:bg-gray-400/50 text-gray-800 font-bold py-2 px-4 rounded flex items-center gap-4 border-2 border-gray-800'
+                    className='hover:bg-projectPurple hover:brightness-125 hover:text-projectWhite text-projectPurple font-bold py-2 px-4 rounded flex items-center gap-4 border-2 border-projectPurple'
                     onClick={itemAnterior}
                 >
                     Anterior
@@ -28,7 +28,7 @@ export default function Pagination({ paginaAtual, itemAnterior, proximoItem }: P
 
             {numeroResultados == 15 ? (
                 <button
-                    className='hover:bg-gray-400/50 text-gray-800 font-bold py-2 px-4 rounded flex items-center gap-4 border-2 border-gray-800'
+                    className='hover:bg-projectPurple hover:brightness-125 hover:text-projectWhite text-projectPurple font-bold py-2 px-4 rounded flex items-center gap-4 border-2 border-projectPurple'
                     onClick={proximoItem}
                 >
                     Próximo
