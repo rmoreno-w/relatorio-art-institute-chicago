@@ -17,6 +17,8 @@ type Data = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     const numeroPaginaString = req.query.pagina! as string;
 
+    const filtroDeOrdem = req.query.filtroDeOrdem! as string | '';
+
     const id = parseInt(req.query.id! as string);
     const nomeDaObra = req.query.nomeDaObra;
     const nomeDoArtista = req.query.nomeDoArtista;
@@ -28,16 +30,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     let filtroBusca = {};
     id && id != NaN ? (filtroBusca = { ...filtroBusca, id }) : null;
-    nomeDoArtista ? (filtroBusca = { ...filtroBusca, artists: { title: nomeDoArtista } }) : null;
-    nomeDaObra ? (filtroBusca = { ...filtroBusca, title: nomeDaObra }) : null;
-    tipoDaObra ? (filtroBusca = { ...filtroBusca, artwork_types: { title: tipoDaObra } }) : null;
-    nomeDepartamento ? (filtroBusca = { ...filtroBusca, departments: { title: nomeDepartamento } }) : null;
+    nomeDoArtista ? (filtroBusca = { ...filtroBusca, artists: { title: { contains: nomeDoArtista } } }) : null;
+    nomeDaObra ? (filtroBusca = { ...filtroBusca, title: { contains: nomeDaObra } }) : null;
+    tipoDaObra ? (filtroBusca = { ...filtroBusca, artwork_types: { title: { contains: tipoDaObra } } }) : null;
+    nomeDepartamento
+        ? (filtroBusca = { ...filtroBusca, departments: { title: { contains: nomeDepartamento } } })
+        : null;
     anoInicio && anoInicio != NaN ? (filtroBusca = { ...filtroBusca, date_start: anoInicio }) : null;
     anoFim && anoFim != NaN ? (filtroBusca = { ...filtroBusca, date_end: anoFim }) : null;
-    lugarDeOrigem ? (filtroBusca = { ...filtroBusca, place_of_origin: lugarDeOrigem }) : null;
+    lugarDeOrigem ? (filtroBusca = { ...filtroBusca, place_of_origin: { contains: lugarDeOrigem } }) : null;
 
-    const areFiltersEmpty = Object.keys(filtroBusca).length === 0 ? true : false;
-    console.log(filtroBusca);
+    let filtroOrdem = {};
+    // console.log(filtroDeOrdem);
+    filtroDeOrdem == 'nomeArtista' ? (filtroOrdem = { artists: { title: 'asc' } }) : null;
+    filtroDeOrdem == 'nomeObra' ? (filtroOrdem = { title: 'asc' }) : null;
+    filtroDeOrdem == 'tipoObra' ? (filtroOrdem = { artwork_types: { title: 'asc' } }) : null;
+    filtroDeOrdem == 'nomeDepartamento' ? (filtroOrdem = { departments: { title: 'asc' } }) : null;
+    filtroDeOrdem == 'anoInicio' ? (filtroOrdem = { date_start: 'asc' }) : null;
+    filtroDeOrdem == 'anoFim' ? (filtroOrdem = { date_end: 'asc' }) : null;
+    filtroDeOrdem == 'lugarOrigem' ? (filtroOrdem = { place_of_origin: 'asc' }) : null;
+    // const areFiltersEmpty = Object.keys(filtroBusca).length === 0 ? true : false;
     // console.log('\n\n\n');
 
     const numeroPagina = parseInt(numeroPaginaString) - 1;
@@ -53,6 +65,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         },
         where: {
             ...filtroBusca,
+        },
+        orderBy: {
+            ...filtroOrdem,
         },
     });
 

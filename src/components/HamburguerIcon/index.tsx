@@ -4,7 +4,7 @@ interface hamburguerIconProps {
 }
 export default function HamburguerIcon({ menuClick, isMenuOpen }: hamburguerIconProps) {
     return (
-        <button onClick={menuClick} className='fixed top-4 left-4 h-12 w-12 z-[12] p-2'>
+        <button onClick={menuClick} className='fixed top-4 left-4 h-12 w-12 z-[12] p-2 bg-projectWhite rounded-md'>
             <span className='flex flex-col'>
                 <span
                     className={`h-1 w-full transition duration-[400ms] rounded-[3px] bg-gray-700 inline-block ${

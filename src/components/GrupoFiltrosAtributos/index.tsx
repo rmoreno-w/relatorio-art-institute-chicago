@@ -1,6 +1,7 @@
 import { atom, useAtom } from 'jotai';
 import { useState } from 'react';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query';
+import { pageAtom } from '../../../pages/index';
 import FiltroAtributo from '../FiltroAtributo';
 
 export const idAtom = atom(0);
@@ -28,9 +29,13 @@ export default function GrupoFiltrosAtributos({ refetchFunction }: grupoFiltrosA
     const [anoInicio, setAnoInicio] = useAtom(anoInicioAtom);
     const [anoFim, setAnoFim] = useAtom(anoFimAtom);
     const [lugarDeOrigem, setLugarDeOrigem] = useAtom(lugarDeOrigemAtom);
+    const [paginaAtual, setPaginaAtual] = useAtom(pageAtom);
 
     function refetchApi() {
-        refetchFunction();
+        setPaginaAtual(1);
+        setTimeout(() => {
+            refetchFunction();
+        }, 0);
     }
 
     function resetarFiltros() {
@@ -66,35 +71,35 @@ export default function GrupoFiltrosAtributos({ refetchFunction }: grupoFiltrosA
                         type='number'
                         fieldValue={id}
                         stateFunction={setId}
-                        blurFunction={refetchApi}
+                        blurFunction={() => id != 0 && refetchApi()}
                     />
                     <FiltroAtributo
                         idLabel='valorNomeArtista'
                         textoLabel='Nome do Artista'
                         fieldValue={nomeDoArtista}
                         stateFunction={setNomeDoArtista}
-                        blurFunction={refetchApi}
+                        blurFunction={() => nomeDoArtista != '' && refetchApi()}
                     />
                     <FiltroAtributo
                         idLabel='valorNomeObra'
                         textoLabel='Nome da Obra'
                         fieldValue={nomeDaObra}
                         stateFunction={setNomeDaObra}
-                        blurFunction={refetchApi}
+                        blurFunction={() => nomeDaObra != '' && refetchApi()}
                     />
                     <FiltroAtributo
                         idLabel='valorTipoObra'
                         textoLabel='Tipo da Obra'
                         fieldValue={tipoDaObra}
                         stateFunction={setTipoDaObra}
-                        blurFunction={refetchApi}
+                        blurFunction={() => tipoDaObra != '' && refetchApi()}
                     />
                     <FiltroAtributo
                         idLabel='valorNomeDepartamento'
                         textoLabel='Nome do Departamento'
                         fieldValue={nomeDepartamento}
                         stateFunction={setNomeDepartamento}
-                        blurFunction={refetchApi}
+                        blurFunction={() => nomeDepartamento != '' && refetchApi()}
                     />
                     <FiltroAtributo
                         idLabel='valorAnoInicio'
@@ -117,7 +122,7 @@ export default function GrupoFiltrosAtributos({ refetchFunction }: grupoFiltrosA
                         textoLabel='Lugar de Origem'
                         fieldValue={lugarDeOrigem}
                         stateFunction={setLugarDeOrigem}
-                        blurFunction={refetchApi}
+                        blurFunction={() => lugarDeOrigem != '' && refetchApi()}
                     />
                     <button
                         className='float-right px-2 py mt-2 rounded-md border-2 border-gray-600'

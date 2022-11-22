@@ -1,6 +1,7 @@
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query';
 import GrupoFiltrosAtributos from '../GrupoFiltrosAtributos';
 import GrupoFiltrosColuna from '../GrupoFiltrosColuna';
+import GrupoFiltrosOrdem from '../GrupoFiltrosOrdem';
 
 interface sidebarProps {
     isMenuOpen: boolean;
@@ -18,6 +19,7 @@ export default function Sidebar({ isMenuOpen, refetchFunction }: sidebarProps) {
         >
             <GrupoFiltrosColuna />
             <GrupoFiltrosAtributos refetchFunction={refetchFunction} />
+            <GrupoFiltrosOrdem refetchFunction={refetchFunction} />
         </aside>
     );
 }

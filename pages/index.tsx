@@ -1,5 +1,5 @@
 import { artists, artworks, artwork_types, departments, Prisma } from '@prisma/client';
-import { useAtom } from 'jotai';
+import { atom, useAtom } from 'jotai';
 import Head from 'next/head';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -14,6 +14,7 @@ import {
     nomeDoArtistaAtom,
     tipoDaObraAtom,
 } from '../src/components/GrupoFiltrosAtributos';
+import { filtroDeOrdemAtom } from '../src/components/GrupoFiltrosOrdem';
 import HamburguerIcon from '../src/components/HamburguerIcon';
 import Loader from '../src/components/Loader';
 import Pagination from '../src/components/Pagination';
@@ -30,8 +31,14 @@ interface composedArtwork {
           })[]
         | undefined;
 }
+
+export const pageAtom = atom(1);
+export const numberOfResultsAtom = atom(0);
+
 function Home() {
-    const [paginaAtual, setPaginaAtual] = useState(1);
+    const [paginaAtual, setPaginaAtual] = useAtom(pageAtom);
+
+    const [numberOfResults, setNumberOfResults] = useAtom(numberOfResultsAtom);
 
     const [id] = useAtom(idAtom);
     const [nomeDaObra] = useAtom(nomeDaObraAtom);
@@ -42,6 +49,8 @@ function Home() {
     const [anoFim] = useAtom(anoFimAtom);
     const [lugarDeOrigem] = useAtom(lugarDeOrigemAtom);
 
+    const [filtroDeOrdem] = useAtom(filtroDeOrdemAtom);
+
     const [isMenuOpen, setMenuOpen] = useState(false);
 
     function toggleMenu() {
@@ -51,14 +60,18 @@ function Home() {
     function handleBotaoAnterior() {
         if (paginaAtual > 1) {
             setPaginaAtual(paginaAtual - 1);
-            refetch();
+            setTimeout(() => {
+                refetch();
+            }, 0);
             return;
         }
     }
 
     function handleBotaoProximo() {
         setPaginaAtual(paginaAtual + 1);
-        refetch();
+        setTimeout(() => {
+            refetch();
+        }, 0);
     }
 
     const { data, isFetching, refetch } = useQuery('dadosDoBD', async () => {
@@ -73,10 +86,12 @@ function Home() {
                 anoInicio: anoInicio,
                 anoFim: anoFim,
                 lugarDeOrigem: lugarDeOrigem,
+                filtroDeOrdem: filtroDeOrdem,
             },
         });
 
         const dadosDoBD = response.data;
+        dadosDoBD && setNumberOfResults(dadosDoBD.obras.length);
 
         return dadosDoBD.obras;
     });
