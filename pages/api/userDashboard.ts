@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     const top10Dados = dadosPizza.slice(0, 10);
-    console.log(top10Dados);
+    // console.log(top10Dados);
     res.status(200).json({
         dadosPizza: top10Dados,
     });

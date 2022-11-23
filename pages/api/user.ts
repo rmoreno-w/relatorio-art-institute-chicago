@@ -12,10 +12,24 @@ type Data = {
               _count: Prisma.ArtworksCountOutputType;
           })[]
         | undefined;
+    numeroDeObrasEncontradas?: number;
+    dadosPizza?: {
+        labels: any[];
+        series: any[];
+    };
+    dadosTreeMap?: {
+        data: {
+            x: string;
+            y: number;
+        }[];
+    };
+    dataObraMaisAntiga?: number;
+    mediaIdade?: number;
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     const numeroPaginaString = req.query.pagina! as string;
+    console.log(numeroPaginaString);
 
     const filtroDeOrdem = req.query.filtroDeOrdem! as string | '';
 
@@ -54,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const numeroPagina = parseInt(numeroPaginaString) - 1;
 
-    const obras = await prisma.artworks.findMany({
+    const obrasPaginadas = await prisma.artworks.findMany({
         skip: numeroPagina * 15,
         take: 15,
         include: {
@@ -71,6 +85,131 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         },
     });
 
+    if (numeroPaginaString == '1') {
+        const obras = await prisma.artworks.findMany({
+            include: {
+                _count: true,
+                artists: true,
+                departments: true,
+                artwork_types: true,
+            },
+            where: {
+                ...filtroBusca,
+            },
+            orderBy: {
+                ...filtroOrdem,
+            },
+        });
+        const numeroDeObrasEncontradas = obras.length;
+
+        const dadosPizza = await prisma.artworks.groupBy({
+            by: ['place_of_origin'],
+            _count: {
+                place_of_origin: true,
+            },
+            where: {
+                ...filtroBusca,
+            },
+            orderBy: {
+                _count: {
+                    place_of_origin: 'desc',
+                },
+            },
+        });
+        const top10DadosPizza = dadosPizza.slice(0, 10);
+        let pizzaSeries = top10DadosPizza.map((cidade: any) => {
+            return cidade._count.place_of_origin;
+        });
+        // Filtrando nulls
+        pizzaSeries = pizzaSeries.filter((quantidade) => quantidade);
+        let pizzaLabels = top10DadosPizza.map((cidade: any) => {
+            return cidade.place_of_origin;
+        });
+        pizzaLabels = pizzaLabels.filter((label) => label);
+
+        const dataAndLabelsPizzaChart = {
+            series: pizzaSeries,
+            labels: pizzaLabels,
+        };
+
+        const dadosTreeMap = await prisma.artworks.groupBy({
+            by: ['id_artwork_type'],
+            _count: {
+                id_artwork_type: true,
+            },
+            where: {
+                ...filtroBusca,
+            },
+            orderBy: {
+                _count: {
+                    id_artwork_type: 'desc',
+                },
+            },
+        });
+        const top10TreeMap = dadosTreeMap.slice(0, 10);
+        let data = [];
+        for (let i = 0; i < top10TreeMap.length; i++) {
+            let artworkType =
+                top10TreeMap[i] &&
+                (await prisma.artwork_types.findFirst({
+                    where: {
+                        id: top10TreeMap[i].id_artwork_type as number,
+                    },
+                }));
+            // console.log(artworkType?.title);
+            let objAux = { x: '', y: 0 };
+            objAux.x = artworkType?.title as string;
+            objAux.y = top10TreeMap[i]._count.id_artwork_type;
+            data.push(objAux);
+        }
+        // const treeMapSeries = top10TreeMap.map((tipoArte: any) => {
+        //     return tipoArte._count.id_artwork_type;
+        // });
+        // const treeMapSeries = top10TreeMap.map((tipoArte: any) => {
+        //     let objetoAuxiliar = { x: '', y: '' };
+        //     objetoAuxiliar.x = tipoArte.id_artwork_type;
+        //     objetoAuxiliar.y = tipoArte._count.id_artwork_type;
+        //     return objetoAuxiliar;
+        // });
+
+        // const dataAndLabelsTreeMapChart = {
+        //     labels: treeMapLabels,
+        //     series: treeMapSeries,
+        // };
+
+        const ObraMaisAntiga = await prisma.artworks.findFirst({
+            orderBy: {
+                date_start: 'asc',
+            },
+            where: {
+                ...filtroBusca,
+            },
+        });
+        const dataObraMaisAntiga = ObraMaisAntiga?.date_start;
+
+        const agregadoAnoInicio = await prisma.artworks.aggregate({
+            _avg: {
+                date_start: true,
+            },
+            where: {
+                ...filtroBusca,
+            },
+        });
+        const mediaIdade = Math.ceil(2022 - agregadoAnoInicio._avg.date_start!);
+
+        res.status(200).json({
+            obras: obrasPaginadas,
+            numeroDeObrasEncontradas: numeroDeObrasEncontradas,
+            dadosPizza: dataAndLabelsPizzaChart,
+            dadosTreeMap: {
+                data: data,
+            },
+            mediaIdade: mediaIdade,
+            dataObraMaisAntiga: dataObraMaisAntiga as number,
+        });
+
+        return;
+    }
     // console.log(obras);
     // const artistas = await prisma.$queryRaw`SELECT * FROM show_artists` ;
     // console.log(artistas);
@@ -87,7 +226,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // console.log(`\n\n\n`);
 
     res.status(200).json({
-        obras: obras,
+        obras: obrasPaginadas,
     });
     // return {
     //     props: {

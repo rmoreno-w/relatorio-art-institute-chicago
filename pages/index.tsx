@@ -1,7 +1,9 @@
 import { atom, useAtom } from 'jotai';
 import Head from 'next/head';
+import Image from 'next/image';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import logo from '../public/logo_Art_Institute_of_Chicago_.png';
 import { apiClient } from '../services/axios';
 import Dashboard from '../src/components/Dashboard';
 import {
@@ -22,8 +24,18 @@ import Sidebar from '../src/components/Sidebar';
 import Tabela from '../src/components/Tabela';
 
 export const pageAtom = atom(1);
-export const displayAtom = atom('dashboard');
+export const displayAtom = atom('tabela');
 export const numberOfResultsAtom = atom(0);
+
+export const numberOfResultsNaQueryDoBdAtom = atom(0);
+export const mediaIdadeObrasAtom = atom(0);
+export const anoInicioObraMaisAntigaAtom = atom(0);
+interface dadosPizzaObjInterface {
+    labels: string[];
+    series: ApexAxisChartSeries | ApexNonAxisChartSeries | undefined;
+}
+export const dadosPizzaAtom = atom({} as dadosPizzaObjInterface);
+export const dadosTreeMapAtom = atom([] as any);
 
 function Home() {
     const [paginaAtual, setPaginaAtual] = useAtom(pageAtom);
@@ -43,6 +55,12 @@ function Home() {
     const [filtroDeOrdem] = useAtom(filtroDeOrdemAtom);
 
     const [isMenuOpen, setMenuOpen] = useState(false);
+
+    const [numberOfResultsNaQueryDoBd, setnumberOfResultsNaQueryDoBd] = useAtom(numberOfResultsNaQueryDoBdAtom);
+    const [mediaIdadeObras, setmediaIdadeObras] = useAtom(mediaIdadeObrasAtom);
+    const [anoInicioObraMaisAntiga, setanoInicioObraMaisAntiga] = useAtom(anoInicioObraMaisAntigaAtom);
+    const [dadosPizza, setdadosPizza] = useAtom(dadosPizzaAtom);
+    const [dadosTreeMap, setdadosTreeMap] = useAtom(dadosTreeMapAtom);
 
     function toggleMenu() {
         setMenuOpen(!isMenuOpen);
@@ -82,7 +100,14 @@ function Home() {
         });
 
         const dadosDoBD = response.data;
-        dadosDoBD && setNumberOfResults(dadosDoBD.obras.length);
+
+        dadosDoBD ? setNumberOfResults(dadosDoBD.obras.length) : 0;
+
+        dadosDoBD.numeroDeObrasEncontradas ? setnumberOfResultsNaQueryDoBd(dadosDoBD.numeroDeObrasEncontradas) : null;
+        dadosDoBD.mediaIdade ? setmediaIdadeObras(dadosDoBD.mediaIdade) : null;
+        dadosDoBD.dataObraMaisAntiga ? setanoInicioObraMaisAntiga(dadosDoBD.dataObraMaisAntiga) : null;
+        dadosDoBD.dadosPizza ? setdadosPizza(dadosDoBD.dadosPizza) : null;
+        dadosDoBD.dadosTreeMap ? setdadosTreeMap([{ ...dadosDoBD.dadosTreeMap }]) : null;
 
         return dadosDoBD.obras;
     });
@@ -94,12 +119,12 @@ function Home() {
             </Head>
             <main className='min-h-screen bg- text-gray-800 flex flex-col font-montserrat'>
                 <HamburguerIcon isMenuOpen={isMenuOpen} menuClick={toggleMenu} />
-                <header className='grid grid-cols-3 h-20 bg-projectWhite text-gray-900 sticky top-0 shadow-md rounded-b-[20px]'>
+                <header className='flex justify-between bg-projectWhite text-gray-900 sticky top-0 shadow-md rounded-b-[20px] w-full py-4'>
                     <div className='order-1'></div>
-                    <span className='flex items-center justify-center order-2 font-liu text-4xl'>
+                    {/* <span className='flex items-center justify-center order-2 font-liu text-4xl'>
                         Art Institute of Chicago
-                    </span>
-                    <div className='order-3 flex justify-end items-center mr-4'>
+                    </span> */}
+                    <div className='order-2 flex justify-end items-center'>
                         <button
                             className={`text-gray-800 font-bold py-2 px-4 flex items-center gap-4 border-b-2 border-transparent hover:border-b-projectPurple ${
                                 displayAtual == 'tabela' ? 'border-b-projectPurple' : null
@@ -116,6 +141,9 @@ function Home() {
                         >
                             Dashboard
                         </button>
+                    </div>
+                    <div className='order-3 flex justify-end mr-4'>
+                        <Image src={logo} alt='Art Institute of Chicago Logo' className='w-[72px] h-[72px]' />
                     </div>
                 </header>
 
